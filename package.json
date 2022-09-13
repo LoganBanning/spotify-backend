@@ -12,8 +12,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "npm run test",
-    "build": "npm run build"
+    "test": "npm run test"
   },
   "repository": {
     "type": "git",

@@ -67,6 +67,12 @@ app.post("/api/token", (req, res) => {
     auth_query_parameters.toString()
     );
   });
+
+  app.get('/', (req, res) => {
+    res.json({
+      hello: 'world'
+    });
+  })
   
   app.get("/auth/login", (req, res) => {
     var scope = "streaming \

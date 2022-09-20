@@ -118,7 +118,7 @@ app.get("/auth/callback", (req, res) => {
       req.session.token = body.access_token;
       res.redirect(`${frontEndUrl}/homepage`); 
     } else {
-      console.log('An error occured requesting token from Spotify')
+      console.log('An error occured requesting token from Spotify', error)
     }
   });
 });

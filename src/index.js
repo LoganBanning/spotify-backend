@@ -128,6 +128,6 @@ app.get('/auth/token', (req, res) => {
   } else { res.sendStatus(403) }
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.SERVER_PORT || 5000;
 
 app.listen(port, () => console.log(`${port}`));

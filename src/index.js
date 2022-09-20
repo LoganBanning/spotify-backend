@@ -11,6 +11,8 @@ const app = express();
 const spotify_client_id = process.env.REACT_APP_CLIENT_ID;
 const spotify_client_secret = process.env.REACT_APP_CLIENT_SECRET;
 const backEndUrl = process.env.BACKEND_URL;
+const frontEndUrl = process.env.FRONTEND_URL;
+
 
 massive({
   connectionString: CONNECTION_STRING,
@@ -114,7 +116,9 @@ app.get("/auth/callback", (req, res) => {
   request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       req.session.token = body.access_token;
-      res.redirect(`${backEndUrl}/homepage`); 
+      res.redirect(`${frontEndUrl}/homepage`); 
+    } else {
+      console.log('An error occured requesting token from Spotify')
     }
   });
 });

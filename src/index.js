@@ -8,8 +8,8 @@ const request = require("request");
 
 const app = express();
 
-const spotify_client_id = process.env.REACT_APP_CLIENT_ID;
-const spotify_client_secret = process.env.REACT_APP_CLIENT_SECRET;
+const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
+const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const backEndUrl = process.env.BACKEND_URL;
 const frontEndUrl = process.env.FRONTEND_URL;
 

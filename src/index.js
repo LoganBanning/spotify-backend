@@ -113,12 +113,15 @@ app.get("/auth/callback", (req, res) => {
     json: true,
   };
 
+  console.log('Auth Options', JSON.stringify(authOptions, null, 1));
+
   request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       req.session.token = body.access_token;
       res.redirect(`${frontEndUrl}/homepage`); 
     } else {
       console.log('An error occured requesting token from Spotify', error)
+      console.log('Status Code', response.statusCode);
     }
   });
 });

@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const massive = require("massive");
 const session = require("express-session");
-const productCtrl = require('./controllers/products');
 
 const { SESSION_SECRET, SERVER_PORT, CONNECTION_STRING } = process.env;
 const request = require("request");
@@ -11,16 +10,12 @@ const app = express();
 
 const spotify_client_id = process.env.REACT_APP_CLIENT_ID;
 const spotify_client_secret = process.env.REACT_APP_CLIENT_SECRET;
+const backEndUrl = process.env.BACKEND_URL;
 
 massive({
   connectionString: CONNECTION_STRING,
   ssl: { rejectUnauthorized: false },
 })
-  .then((db) => {
-    app.set("db", db);
-    console.log("db connected");
-  })
-  .catch((err) => console.log(err));
 
 app.use(
   session({
@@ -57,7 +52,7 @@ app.post("/api/token", (req, res) => {
     response_type: "code",
     client_id: spotify_client_id,
     scope: scope,
-    redirect_uri: "http://localhost:5000/auth/callback",
+    redirect_uri: `${backEndUrl}/auth/callback`,
     state: state,
     grant_type: authorization_code,
   });
@@ -85,7 +80,7 @@ app.post("/api/token", (req, res) => {
       response_type: "code",
       client_id: spotify_client_id,
       scope: scope,
-      redirect_uri: "http://localhost:5000/auth/callback",
+      redirect_uri: `${backEndUrl}/auth/callback`,
       state: state,
     });
   
@@ -102,7 +97,7 @@ app.get("/auth/callback", (req, res) => {
     url: "https://accounts.spotify.com/api/token",
     form: {
       code: code,
-      redirect_uri: "http://localhost:5000/auth/callback",
+      redirect_uri: `${backEndUrl}/auth/callback`,
       grant_type: "authorization_code",
     },
     headers: {
@@ -119,7 +114,7 @@ app.get("/auth/callback", (req, res) => {
   request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       req.session.token = body.access_token;
-      res.redirect('http://localhost:3000/homepage'); 
+      res.redirect(`${backEndUrl}/homepage`); 
     }
   });
 });
@@ -132,8 +127,6 @@ app.get('/auth/token', (req, res) => {
       })
   } else { res.sendStatus(403) }
 });
-
-app.get('/api/merch', productCtrl.getProducts);
 
 const port = process.env.PORT || 5000;
 

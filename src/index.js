@@ -3,7 +3,7 @@ const express = require("express");
 const massive = require("massive");
 const session = require("express-session");
 
-const { SESSION_SECRET, SERVER_PORT, CONNECTION_STRING } = process.env;
+const { SESSION_SECRET } = process.env;
 const request = require("request");
 
 const app = express();
@@ -13,11 +13,6 @@ const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const backEndUrl = process.env.BACKEND_URL;
 const frontEndUrl = process.env.FRONTEND_URL;
 
-
-massive({
-  connectionString: CONNECTION_STRING,
-  ssl: { rejectUnauthorized: false },
-})
 
 app.use(
   session({
@@ -29,7 +24,7 @@ app.use(
 
 app.use(express.json());
 
-app.use(express.static(`${__dirname}/../build`))
+// app.use(express.static(`${__dirname}/../build`))
 
 var generateRandomString = function (length) {
   var text = "";
@@ -94,12 +89,12 @@ app.post("/api/token", (req, res) => {
 
 app.get("/auth/callback", (req, res) => {
   var code = req.query.code;
-
+  console.log('hit call back', code)
   var authOptions = {
     url: "https://accounts.spotify.com/api/token",
     form: {
       code: code,
-      redirect_uri: `${backEndUrl}/auth/callback`,
+      redirect_uri: `${backEndUrl}/auth/callback/`,
       grant_type: "authorization_code",
     },
     headers: {
@@ -113,14 +108,15 @@ app.get("/auth/callback", (req, res) => {
     json: true,
   };
 
-  console.log('Auth Options', JSON.stringify(authOptions, null, 1));
+  // console.log('token', token);
 
   request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       req.session.token = body.access_token;
+      console.log('token', req.session.token)
       res.redirect(`${frontEndUrl}/homepage`); 
     } else {
-      console.log('An error occured requesting token from Spotify', error)
+      console.log('body', body);
       console.log('Status Code', response.statusCode);
     }
   });
